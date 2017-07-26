@@ -1,0 +1,116 @@
+Q1:
+select distinct * 
+from named <http://www.wikidata.org>
+from named <http://dbpedia.org>
+ where 
+{
+service <http://dbpedia.org/sparql>{
+graph <http://dbpedia.org> {?s2 dbo:person ?Concept2}
+graph <http://www.wikidata.org> {?s <http://www.wikidata.org/entity/P646c> ?o}
+}
+} limit 1000;
+
+
+select distinct * where 
+{
+service <http://dbpedia.org/sparql>{
+?s2 dbo:person ?Concept2 .
+?s <http://www.wikidata.org/entity/P646c> "/m/0wbnjz6"
+}
+} limit 1000
+
+Q2:
+select ?o
+from named <http://3cixty.com/milan/fieramilano>
+where{
+	service <https://kb.3cixty.com/sparql> {
+		graph <http://3cixty.com/milan/fieramilano> {<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o}
+	}
+}
+
+select * where{
+	service <https://kb.3cixty.com/sparql> {
+		<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o
+	}
+}
+
+
+
+Q3:
+select *
+from named <http://3cixty.com/milan/fieramilano>
+from named <http://3cixty.com/madeira/foursquare>
+where{
+	service <https://kb.3cixty.com/sparql> {
+		graph <http://3cixty.com/milan/fieramilano> {<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o}
+	    graph <http://3cixty.com/madeira/foursquare> {<http://data.linkedevents.org/location/365efc71-ee91-3a99-88e9-bbb5247acfd9/geometry> <http://www.w3.org/ns/locn#geometry> ?o2}
+	}
+}
+
+select * where{
+	service <https://kb.3cixty.com/sparql> {
+		<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o.
+		<http://data.linkedevents.org/location/365efc71-ee91-3a99-88e9-bbb5247acfd9/geometry> <http://www.w3.org/ns/locn#geometry> ?o2
+	}
+}
+
+Q4:
+select *
+from named <http://3cixty.com/milan/fieramilano>
+from named <http://3cixty.com/madeira/foursquare>
+from named <http://3cixty.com/milan/foursquare>
+where{
+	service <https://kb.3cixty.com/sparql> {
+		graph <http://3cixty.com/milan/fieramilano> {<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o}
+	    graph <http://3cixty.com/madeira/foursquare> {<http://data.linkedevents.org/location/365efc71-ee91-3a99-88e9-bbb5247acfd9/geometry> <http://www.w3.org/ns/locn#geometry> ?o2}
+	     graph <http://3cixty.com/milan/foursquare>{<http://data.linkedevents.org/location/ef23c5e2-1ddd-395a-bb50-c187f290af8f/geometry> <http://www.w3.org/ns/locn#geometry> ?o3}
+	}
+}
+
+select * where{
+	service <https://kb.3cixty.com/sparql> {
+		<http://data.linkedevents.org/event/ed73bb59-1ad2-4d7d-af97-08ae571ef190> <http://schema.org/price> ?o.
+		<http://data.linkedevents.org/location/365efc71-ee91-3a99-88e9-bbb5247acfd9/geometry> <http://www.w3.org/ns/locn#geometry> ?o2.
+		<http://data.linkedevents.org/location/ef23c5e2-1ddd-395a-bb50-c187f290af8f/geometry> <http://www.w3.org/ns/locn#geometry> ?o3
+	}
+}
+
+
+Q5:
+
+SELECT ?birthDate ?spouseName ?movieTitle ?movieDate where {
+  SERVICE <http://dbpedia.org/sparql>
+    { SELECT ?birthDate ?spouseName  from named <http://dbpedia.org>  WHERE { graph <http://dbpedia.org>{
+        ?actor rdfs:label "Arnold Schwarzenegger"@en ;
+               dbpo:birthDate ?birthDate ;
+               dbpo:spouse ?spouseURI .
+        ?spouseURI rdfs:label ?spouseName 
+        FILTER ( lang(?spouseName) = "en" )
+      }}
+ }
+  SERVICE <http://data.linkedmdb.org/sparql>{
+      ?actor imdb:actor_name "Arnold Schwarzenegger".
+      ?movie imdb:actor ?actor ;
+             dcterms:title ?movieTitle ;
+             dcterms:date ?movieDate 
+      }
+ }
+
+
+SELECT ?birthDate ?spouseName ?movieTitle ?movieDate where {
+	SERVICE <http://dbpedia.org/sparql>
+	{
+	    ?actor rdfs:label "Arnold Schwarzenegger"@en ;
+	           dbpo:birthDate ?birthDate ;
+	           dbpo:spouse ?spouseURI .
+	    ?spouseURI rdfs:label ?spouseName 
+	    FILTER ( lang(?spouseName) = "en" )
+  	}
+	}
+SERVICE <http://data.linkedmdb.org/sparql>{
+  ?actor imdb:actor_name "Arnold Schwarzenegger".
+  ?movie imdb:actor ?actor ;
+         dcterms:title ?movieTitle ;
+         dcterms:date ?movieDate 
+  }
+}
